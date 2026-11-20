@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>北陽電機 UST-10 × BrightSign 連携ガイド</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #0b0f19;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      padding: 48px 24px;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .badge-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .badge.blue { background-color: rgba(37, 99, 235, 0.25); border-color: #3b82f6; color: #93c5fd; }
+    .badge.green { background-color: rgba(16, 185, 129, 0.25); border-color: #10b981; color: #6ee7b7; }
+    .badge.amber { background-color: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fcd34d; }
+
+    .container {
+      max-width: 1000px;
+      margin: 36px auto 0;
+      padding: 0 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      border-color: #64748b;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+
+    .card h2 {
+      font-size: 1.35rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #e2e8f0;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin: 20px 0 10px;
+      color: #38bdf8;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: #cbd5e1;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 16px;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background-color: rgba(37, 99, 235, 0.1);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 18px 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background-color: rgba(245, 158, 11, 0.1);
+    }
+
+    .callout.danger {
+      border-left-color: var(--danger);
+      background-color: rgba(239, 68, 68, 0.12);
+    }
+
+    .callout h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .callout.warning h4 { color: #fde047; }
+    .callout.danger h4 { color: #fca5a5; }
+
+    .diagram-box {
+      background: #0b0f19;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      line-height: 1.5;
+    }
+
+    pre code {
+      display: block;
+      background: var(--code-bg);
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 16px;
+      color: #e2e8f0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.5rem; }
+    }
+
+    .flow-step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .step-body {
+      flex-grow: 1;
+    }
+
+    .step-body h5 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>北陽電機 UST-10 × BrightSign 連携ガイド</h1>
+    <p>LiDAR測域センサ（UST-10LX / UST-10LN）とサイネージプレーヤーBrightSignを組み合わせた、インタラクティブ空間演出・人感トリガーの実装マニュアル</p>
+    <div class="badge-container">
+      <span class="badge blue">UST-10LX (Ethernet / SCIP)</span>
+      <span class="badge green">UST-10LN (I/O接点 / Area)</span>
+      <span class="badge amber">BrightSign Series 4 / Series 5</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview')">① 概要・モデル比較</button>
+      <button class="tab-btn" onclick="switchTab('gpio')">② UST-10LN × GPIO接続</button>
+      <button class="tab-btn" onclick="switchTab('udp')">③ UST-10LX × 中継機 (UDP)</button>
+      <button class="tab-btn" onclick="switchTab('nodejs')">④ UST-10LX × BrightSign直接 (Node.js)</button>
+    </div>
+
+    <!-- TAB 1: 概要 -->
+    <div id="overview" class="tab-content active">
+      <div class="card">
+        <h2>UST-10シリーズの選定と連携方式の違い</h2>
+        <p>「UST-10」には通信仕様が異なる2種類の代表モデルが存在します。どちらの型番を使用するかによって、BrightSignとの接続方式が完全に分かれます。</p>
+        
+        <div class="grid-2">
+          <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+            <h3 style="color: #6ee7b7; margin-top:0;">UST-10LN（エリア検知型）</h3>
+            <ul>
+              <li><strong>通信:</strong> I/O信号（フォトカプラ出力）</li>
+              <li><strong>得意なこと:</strong> 人が近づいたら検知、通過検知（トリップワイヤ）</li>
+              <li><strong>BrightSign連携:</strong> <strong>GPIO端子</strong> に直接（リレー経由）接続</li>
+              <li><strong>特徴:</strong> PC不要・設定がシンプル・誤作動が少なく安定</li>
+            </ul>
+          </div>
+          <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+            <h3 style="color: #93c5fd; margin-top:0;">UST-10LX（データ出力型）</h3>
+            <ul>
+              <li><strong>通信:</strong> Ethernet（SCIPプロトコル TCP/IP）</li>
+              <li><strong>得意なこと:</strong> タッチ位置座標、複数人トラッキング、動的エリア</li>
+              <li><strong>BrightSign連携:</strong> <strong>UDPネットワーク通信</strong> または <strong>内蔵Node.js</strong></li>
+              <li><strong>特徴:</strong> 高度なインタラクティブ体験が可能</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <h4>💡 どちらを選ぶべき？</h4>
+          <p style="margin-bottom:0;">
+            「人が近づいたら動画Aから動画Bに切り替える」だけであれば <strong>UST-10LN + GPIO</strong> が最も堅牢でトラブルがありません。<br>
+            「触った壁の位置でエフェクトを出す」「複数ゾーンを細かく制御したい」場合は <strong>UST-10LX + UDP/Node.js</strong> を選択します。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: UST-10LN × GPIO -->
+    <div id="gpio" class="tab-content">
+      <div class="card">
+        <h2>UST-10LN（I/O型）と BrightSign GPIO の接続</h2>
+        <p>UST-10LN のハードウェア接点出力を、BrightSign の GPIO ポート（DB-15またはフェニックス端子）に入力します。</p>
+
+        <div class="callout danger">
+          <h4>⚠️ 電気仕様に関する最重要注意事項（破損防止）</h4>
+          <p>
+            <strong>BrightSignのGPIO端子は 3.3V プルアップ回路</strong> です。GNDと短絡（無電圧a接点）することで「ボタンが押された」と認識します。<br>
+            一方、UST-10LNの電源は DC12V または DC24V で駆動し、出力はオープンコレクタです。<br>
+            <strong>絶対にセンサの出力をBrightSignに直接印加しないでください。BrightSignのメインボードが破損します。</strong><br>
+            必ず <strong>リレー（オムロン G2R等）</strong> または <strong>フォトカプラ絶縁ボード</strong> を挟んで無電圧接点（ドライコンタクト）に変換してください。
+          </p>
+        </div>
+
+        <h3>配線フロー</h3>
+        <div class="diagram-box">
+[UST-10LN] (DC12V/24V)
+  ├─ 電源(+)  ─────── DC 12V/24V 電源 (+)
+  ├─ 電源(-)  ─────── DC 12V/24V 電源 (-)
+  └─ 出力1(検知) ───┐
+                    │
+            [メカニカルリレー / フォトカプラ]
+                    │
+                    ├─── 接点 COM ─── BrightSign GPIO GND (Pin 11など)
+                    └─── 接点 NO  ─── BrightSign GPIO Pin 0〜7 (Pin 1〜8)
+        </div>
+
+        <h3>BrightAuthor:connected の設定手順</h3>
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h5>インタラクティブ プレゼンテーションを作成</h5>
+            <p>ゾーンタイプを「Interactive」にして、待機動画（Loop）と再生動画を配置します。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h5>GPIO イベントを追加</h5>
+            <p>待機動画から再生動画へ「GPIO Input」トランジションを引きます。配線したピン番号（例：Button 0）を選択し、「Press」または「Down」を指定します。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h5>タイムアウトまたは終了イベント</h5>
+            <p>再生動画の終了時（Media End）または検知が切れた後に待機動画へ戻るトランジションを設定します。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: UST-10LX × 中継機 (UDP) -->
+    <div id="udp" class="tab-content">
+      <div class="card">
+        <h2>UST-10LX + 中継機（Raspberry Pi / 小型PC）+ UDP連携</h2>
+        <p>展示会や商業施設で最も実績が多く、調整やキャリブレーションが容易な構成です。</p>
+
+        <div class="diagram-box">
+[UST-10LX] ──(LAN / TCP 10940)──> [Raspberry Pi / PC]
+                                      │
+                                      │ SCIP解析 & エリア座標判定
+                                      │ UDPパケット送信 ("ZONE1_TRIGGER")
+                                      ▼
+                                [BrightSign] (UDP受信: ポート5000)
+                                      ▼
+                                [ディスプレイ切替]
+        </div>
+
+        <h3>中継機用 Python スクリプト（例）</h3>
+        <pre><code>import socket
+import time
+
+# 設定
+BRIGHTSIGN_IP = "192.168.0.50"
+BRIGHTSIGN_PORT = 5000
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+def send_trigger(command_str):
+    message = command_str.encode('utf-8')
+    sock.sendto(message, (BRIGHTSIGN_IP, BRIGHTSIGN_PORT))
+    print(f"Sent UDP to BrightSign: {command_str}")
+
+# エリア内侵入を検知したときの送信例
+if __name__ == "__main__":
+    # 実際にはUST-10LXのSCIPデータを解析して判定
+    send_trigger("ENTER_ZONE_A")
+</code></pre>
+
+        <h3>BrightSign側の設定 (BrightAuthor:connected)</h3>
+        <ul>
+          <li><strong>UDPレシーバー設定:</strong> プレゼンテーションプロパティ > 「Interactive」タブ > UDP Receiver Port を <code>5000</code> に設定。</li>
+          <li><strong>UDPイベントの設定:</strong> 待機状態から再生状態への矢印に「UDP Event」を配置し、受信文字列に <code>ENTER_ZONE_A</code> を指定。</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TAB 4: UST-10LX × BrightSign直接 (Node.js) -->
+    <div id="nodejs" class="tab-content">
+      <div class="card">
+        <h2>BrightSign単体でUST-10LXを直結制御（Node.js利用）</h2>
+        <p>外部PCを一切使わず、BrightSign Series 4 / 5（HD/XD/XT）のChromium + Node.js機能を使い、センサと直結します。</p>
+
+        <div class="callout">
+          <h4>💡 BrightSignのNode.js環境</h4>
+          <p style="margin-bottom:0;">
+            BrightSign OS 8.x/9.xでは、HTML5ウィジェット上でNode.jsの標準モジュール（<code>net</code>, <code>dgram</code>等）がネイティブ動作します。外部ライブラリを入れずとも、標準のソケット通信でSCIPプロトコルを制御できます。
+          </p>
+        </div>
+
+        <h3>実装コード例（HTML5 / JavaScript）</h3>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1 id="status"&gt;LiDAR Standby...&lt;/h1&gt;
+
+  &lt;script&gt;
+    // Node.jsのnetモジュールを使用
+    const net = require('net');
+    const dgram = require('dgram');
+
+    const SENSOR_IP = '192.168.0.10';
+    const SENSOR_PORT = 10940;
+
+    const client = new net.Socket();
+
+    client.connect(SENSOR_PORT, SENSOR_IP, () =&gt; {
+      console.log('Connected to UST-10LX');
+      document.getElementById('status').innerText = 'LiDAR Connected';
+      
+      // SCIP 2.0 スキャン開始コマンド (例: MD0000108000001)
+      client.write('MD0000108000001\n');
+    });
+
+    client.on('data', (data) =&gt; {
+      const response = data.toString();
+      // SCIP 2/3文字エンコードされた距離データをデコードしエリア判定
+      // しきい値内の反応があれば、ローカルBrightSignや画面を更新
+    });
+
+    client.on('error', (err) =&gt; {
+      console.error('Socket error:', err);
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <h3>autorun.brs でのNode.js有効化設定</h3>
+        <pre><code>r = CreateObject("roRectangle", 0, 0, 1920, 1080)
+config = {
+    nodejs_enabled: true,
+    brightsign_js_objects_enabled: true,
+    url: "file:///sd:/index.html"
+}
+h = CreateObject("roHtmlWidget", r, config)
+h.Show()</code></pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>
